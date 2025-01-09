@@ -49,8 +49,8 @@ fun RootNavigation() {
             }
 
             composable<AddTaskPage>{  backStackEntry ->
-                val project = backStackEntry.toRoute<AddTaskPage>().projectId
-                AddTaskScreen()
+                val projectId = backStackEntry.toRoute<AddTaskPage>().projectId
+                AddTaskScreen(projectId)
             }
 
         }

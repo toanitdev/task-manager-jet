@@ -2,6 +2,7 @@ package com.toanitdev.taskmanager.data.repositories
 
 import com.toanitdev.taskmanager.data.datasources.local.room.RoomDataSource
 import com.toanitdev.taskmanager.data.datasources.local.room.entities.ProjectEntity
+import com.toanitdev.taskmanager.data.datasources.local.room.entities.TaskEntity
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSource
 import com.toanitdev.taskmanager.domain.entities.Project
 import com.toanitdev.taskmanager.domain.entities.Task
@@ -46,7 +47,8 @@ class ProjectRepositoryImpl @Inject constructor(
             endDate = it.endDate,
             createDate = it.createDate,
             estimateTime = it.estimateTime,
-            storyPoint = it.storyPoint
+            storyPoint = it.storyPoint,
+            projectId = it.projectId
         ) }
 
         return  Project(
@@ -68,6 +70,23 @@ class ProjectRepositoryImpl @Inject constructor(
                 createdTime = project.createdTime,
                 priority = project.priority,
                 type = project.type
+            )
+        )
+    }
+
+    override fun addTaskToProject(task: Task) {
+        roomDataSource.addTaskToProject(
+            TaskEntity(
+                name = task.name,
+                description = task.description,
+                priority = task.priority,
+                status = task.status,
+                startDate = task.startDate,
+                endDate = task.endDate,
+                createDate = task.createDate,
+                estimateTime = task.estimateTime,
+                storyPoint = task.storyPoint,
+                projectId = task.projectId
             )
         )
     }

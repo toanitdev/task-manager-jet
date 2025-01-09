@@ -13,5 +13,6 @@ data class Task(
     val endDate: String,
     val createDate: String,
     val estimateTime: Int,
-    val storyPoint: Int
+    val storyPoint: Int,
+    var projectId: Int
 )

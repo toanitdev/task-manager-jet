@@ -40,9 +40,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sd.lib.compose.wheel_picker.FVerticalWheelPicker
 import com.sd.lib.compose.wheel_picker.rememberFWheelPickerState
+import com.toanitdev.taskmanager.core.helper.getCurrentDateTimeString
+import com.toanitdev.taskmanager.domain.entities.Task
+import com.toanitdev.taskmanager.presentations.project.ProjectViewmodel
 import com.toanitdev.taskmanager.ui.composable.InputText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -52,7 +59,7 @@ val storyPoint = arrayOf(1, 2, 3, 5, 8, 13, 21, 34)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskScreen() {
+fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel()) {
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var estimateTime by remember { mutableStateOf("") }
@@ -88,6 +95,9 @@ fun AddTaskScreen() {
                 .padding(innerPadding)
                 .padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+
+
+            Text("Project: $projectId ")
             InputText(
                 label = "Title", value = name,
                 modifier = Modifier.height(48.dp)
@@ -254,6 +264,20 @@ fun AddTaskScreen() {
 
             Button(onClick = {
 
+                CoroutineScope(Dispatchers.IO).launch {
+                    viewmodel.addTasksToProject(projectId, Task(
+                        name = name,
+                        description = description,
+                        priority = Priority.entries[priorityWheelState.currentIndex].level.toString(),
+                        status = Status.entries[statusWheelState.currentIndex].level.toString(),
+                        startDate = startDate,
+                        endDate = endDate,
+                        createDate = getCurrentDateTimeString(),
+                        estimateTime = estimateTime.toInt(),
+                        storyPoint = storyPoint[storyPointWheelState.currentIndex],
+                        projectId = projectId
+                    ))
+                }
             }) {
                 Text("Add Task")
             }
@@ -336,56 +360,6 @@ fun AddTaskScreen() {
         }
     }
 }
-//
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun DatePickerDialogExample() {
-//    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-//    var showDatePicker by remember { mutableStateOf(false) }
-//    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Text("Selected Date: ${selectedDate.format(dateFormatter)}")
-//
-//        Spacer(modifier = Modifier.height(16.dp))
-//
-//        Button(onClick = { showDatePicker = true }) {
-//            Text("Pick a Date")
-//        }
-//
-//        if (showDatePicker) {
-//            DatePickerDialog(
-//                onDismissRequest = { showDatePicker = false },
-//                confirmButton = {
-//                    TextButton(onClick = { showDatePicker = false }) {
-//                        Text("Confirm")
-//                    }
-//                }
-//            ) {
-//                val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
-//                DatePicker(state = datePickerState)
-//
-//                LaunchedEffect(datePickerState.selectedDateMillis) {
-//                    datePickerState.selectedDateMillis?.let {
-//                        selectedDate = LocalDate.ofEpochDay(it / (1000 * 60 * 60 * 24))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun DatePickerDialogPreview() {
-//    DatePickerDialogExample()
-//}
 
 
 @Composable

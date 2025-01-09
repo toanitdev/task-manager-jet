@@ -25,7 +25,7 @@ data class TaskEntity(
     @ColumnInfo val createDate: String,
     @ColumnInfo val estimateTime: Int,
     @ColumnInfo val storyPoint: Int,
-    @ColumnInfo val projectId: Int
+    @ColumnInfo var projectId: Int
 )
 
 
