@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -128,7 +127,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                             .background(Color.White, shape = RoundedCornerShape(12.dp))
                     ) {
                         if (priorityWheelState.currentIndex >= 0) {
-                            Text(Priority.entries[priorityWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
+                            Text(Task.Priority.entries[priorityWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
                         }
                         Icon(
                             imageVector = Icons.Filled.ArrowDropDown,
@@ -155,7 +154,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                             .background(Color.White, shape = RoundedCornerShape(12.dp))
                     ) {
                         if (statusWheelState.currentIndex >= 0) {
-                            Text(Status.entries[statusWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
+                            Text(Task.Status.entries[statusWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
                         }
                         Icon(
                             imageVector = Icons.Filled.ArrowDropDown, "", modifier = Modifier
@@ -268,8 +267,8 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                     viewmodel.addTasksToProject(projectId, Task(
                         name = name,
                         description = description,
-                        priority = Priority.entries[priorityWheelState.currentIndex].level.toString(),
-                        status = Status.entries[statusWheelState.currentIndex].level.toString(),
+                        priority = Task.Priority.entries[priorityWheelState.currentIndex].level.toString(),
+                        status = Task.Status.entries[statusWheelState.currentIndex].level.toString(),
                         startDate = startDate,
                         endDate = endDate,
                         createDate = getCurrentDateTimeString(),
@@ -292,10 +291,10 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
             ) {
                 FVerticalWheelPicker(
                     modifier = Modifier.fillMaxWidth(),
-                    count = Status.entries.size,
+                    count = Task.Status.entries.size,
                     state = statusWheelState
                 ) { index ->
-                    Text(Status.entries[index].label)
+                    Text(Task.Status.entries[index].label)
                 }
             }
         }
@@ -309,10 +308,10 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
             ) {
                 FVerticalWheelPicker(
                     modifier = Modifier.fillMaxWidth(),
-                    count = Priority.entries.size,
+                    count = Task.Priority.entries.size,
                     state = priorityWheelState
                 ) { index ->
-                    Text(Priority.entries[index].label)
+                    Text(Task.Priority.entries[index].label)
                 }
             }
         }
@@ -367,22 +366,8 @@ fun PrioritySheet() {
     FVerticalWheelPicker(
         modifier = Modifier.width(60.dp),
         // Specified item count.
-        count = Priority.entries.size,
+        count = Task.Priority.entries.size,
     ) { index ->
-        Text(Priority.entries[index].label)
+        Text(Task.Priority.entries[index].label)
     }
-}
-
-enum class Priority(val label: String, val level: Int) {
-    URGENT("Urgent", 1),
-    HIGH("High", 2),
-    NORMAL("Normal", 3),
-    LOW("Low", 4)
-}
-
-
-enum class Status(val label: String, val level: Int) {
-    Todo("To do", 1),
-    OnProgress("On Progress", 2),
-    Done("Done", 3),
 }

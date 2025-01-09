@@ -1,27 +1,32 @@
 package com.toanitdev.taskmanager.presentations.projectDetails
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.twotone.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.toanitdev.taskmanager.domain.entities.Project
+import com.toanitdev.taskmanager.domain.entities.Task
 import com.toanitdev.taskmanager.presentations.AddTaskPage
 import com.toanitdev.taskmanager.presentations.LocalNavigation
 import com.toanitdev.taskmanager.presentations.project.ProjectViewmodel
@@ -75,15 +81,60 @@ fun ProjectDetailScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewMo
                         Icon(imageVector = Icons.Filled.Add, "")
                     }
                 }
-                LazyColumn {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(project.tasks) { item ->
-                        Text(item.name)
+                        TaskItem(item)
                     }
                 }
             }
         }
 
 
+    }
+}
+
+
+@Composable
+fun TaskItem(task: Task) {
+    val taskPriority = Task.Priority.entries.first { it.level == task.priority.toInt() }
+    val taskStatus = Task.Status.entries.first { it.level == task.status.toInt() }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.White, shape = RoundedCornerShape(12.dp))
+            .padding(12.dp)
+            .height(IntrinsicSize.Min),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            Modifier
+                .background(color = taskStatus.color, shape = CircleShape)
+                .height(24.dp)
+                .width(24.dp)
+        ) {}
+
+        Text(task.name, Modifier.weight(1f))
+        VerticalDivider(thickness = 1.dp, color = Color.LightGray.copy(alpha = 0.5f))
+        Box(
+            Modifier
+                .width(70.dp)
+                .background(
+                    taskPriority.color.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(percent = 50)
+                )
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(taskPriority.label, color = taskPriority.color, fontSize = 13.sp)
+        }
+        VerticalDivider(thickness = 1.dp, color = Color.LightGray.copy(alpha = 0.5f))
+        IconButton({
+
+        }, Modifier.size(24.dp)) {
+            Icon(imageVector = Icons.Filled.ArrowDropDown, "")
+        }
     }
 }
 
