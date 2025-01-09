@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,12 +33,12 @@ fun InputText(
 ) {
     Column {
 
-        Text(label, fontSize = 12.sp)
+        Text(label, fontSize = 13.sp)
         Spacer(Modifier.height(6.dp))
         Row(
             Modifier
                 .background(
-                    Color(0xFFFFFFFF),
+                    MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(corner = CornerSize(12.dp))
                 )
                 .padding(16.dp)

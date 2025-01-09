@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -23,13 +25,18 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.twotone.DateRange
+import androidx.compose.material.icons.twotone.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -52,7 +59,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -62,9 +71,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.toanitdev.taskmanager.domain.entities.Project
-import com.toanitdev.taskmanager.presentations.LocalNavigation
 import com.toanitdev.taskmanager.presentations.ProjectDetailsPage
 import com.toanitdev.taskmanager.ui.composable.InputText
+import com.toanitdev.taskmanager.ui.theme.Green
+import com.toanitdev.taskmanager.ui.theme.White
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -97,38 +107,46 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
 
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
 
-        TopAppBar(title = { Text("Projects", fontSize = 28.sp, color = Color(0xFF3e25ab)) },
+        TopAppBar(
+            title = { Text("Your projects", fontSize = 26.sp, color = MaterialTheme.colorScheme.onPrimary) },
             actions = {
 
                 IconButton(onClick = {
                     openBottomSheet = !openBottomSheet
                 }) {
-                    Icon(imageVector = Icons.Filled.Add, "")
+                    Icon(imageVector = Icons.Filled.Add, "", tint = MaterialTheme.colorScheme.onPrimary)
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFd4ceff)
+                containerColor = MaterialTheme.colorScheme.primary
             )
         )
 
-    }, containerColor = Color(0xFFd4ceff)) { innerPadding ->
+    }, containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
 
-        Column(
+        Box(
             modifier = Modifier.padding(innerPadding)
         ) {
+            Box(
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+            Column {
 
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Box {
-                LazyColumn() {
-                    itemsIndexed(list) { index, item ->
-                        ProjectItemView(
-                            Color.White,
-                            item.name,
-                            item.description,
-                            item.createdTime
-                        ) {
-                            onNavigate(ProjectDetailsPage(item))
+                Spacer(modifier = Modifier.height(16.dp))
+                Box {
+                    LazyColumn() {
+                        itemsIndexed(list) { index, item ->
+                            ProjectItemView(
+                                item.name,
+                                item.description,
+                                item.createdTime
+                            ) {
+                                onNavigate(ProjectDetailsPage(item))
+                            }
                         }
                     }
                 }
@@ -205,97 +223,96 @@ fun AddProjectBottomSheet(
 }
 
 
-enum class CardColor(
-    val color: Color
-) {
-    Red(Color(0xFFFFCDD2)),
-    Blue(Color(0xFF4FC3F7)),
-    Green(Color(0xFFAED581)),
-    Yellow(Color(0xFFFFD54F));
-
-    companion object {
-        fun getRandom(): CardColor {
-            val colors = entries.toTypedArray()
-            return colors[Random.nextInt(colors.size)]
-
-        }
-    }
-}
 
 @Composable
 fun ProjectItemView(
-    color: Color,
     name: String,
     description: String,
     dateTime: String,
     onClicked: () -> Unit
 ) {
+
+    val bgColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f)
     Box(Modifier.padding(16.dp)) {
-        Card(colors = CardColors(
-            color,
-            contentColor = Color.Black,
-            disabledContainerColor = color,
-            disabledContentColor = Color.Black
-        ), modifier = Modifier.clickable {
+        Card(
+            colors = CardColors(
+                containerColor = bgColor,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledContainerColor = bgColor,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
+            modifier = Modifier.clickable {
             onClicked()
         }) {
-            Row(
+
+            Column(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .height(IntrinsicSize.Min)
+                    .padding(20.dp)
+                    .height(IntrinsicSize.Min),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(
-                        name,
-                        fontSize = 21.sp,
-                        color = Color(0xFF1d64a9),
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        description,
-                        color = Color(0xFF64B5F6),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis, fontSize = 13.sp,
-                        lineHeight = 13.sp
-                    )
-                }
-
-                VerticalDivider(thickness = 2.dp, color = Color(0xFF64B5F6))
-
-                getDate(dateTime)?.let {
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(
-                        modifier = Modifier
-                            .width(75.dp)
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                    Box(
+                        Modifier
+                            .background(Green, shape = CircleShape)
+                            .size(32.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("${it.year}", color = Color(0xFF64B5F6), fontSize = 24.sp)
-
-                        HorizontalDivider(thickness = 2.dp, color = Color(0xFF64B5F6))
-                        Row {
-                            Text(
-                                toDateInMonth(it),
-                                color = Color(0xFF64B5F6),
-                                fontSize = 24.sp
-                            )
-                        }
-                        HorizontalDivider(thickness = 2.dp, color = Color(0xFF64B5F6))
-
                         Text(
-                            toStringTime(it),
-                            color = Color(0xFF64B5F6),
-                            fontSize = 24.sp
+                            name.first().uppercase(),
+                            color = White,
+                            fontWeight = FontWeight.Bold
                         )
+                    }
+                    Column(
+                        Modifier.weight(1f)
+                    ) {
+                        Text(
+                            name,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        getDate(dateTime)?.let {
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.DateRange,
+                                    "",
+                                    tint = LocalContentColor.current.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(15.dp)
+                                )
+                                Text(
+                                    it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                                    fontSize = 15.sp,
+                                    color = LocalContentColor.current.copy(alpha = 0.7f),
+                                )
+                            }
+                        }
+                    }
+                    IconButton({}) {
+
+                        Icon(imageVector = Icons.TwoTone.MoreVert, "", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+
                     }
                 }
 
+                HorizontalDivider()
+                Text(
+                    description,
+                    fontSize = 15.sp,
+                    color = LocalContentColor.current.copy(alpha = 0.7f),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
@@ -309,7 +326,7 @@ fun ProjectItemView(
 //
 
 
-@Preview(showBackground = true, backgroundColor = 0xFFd4ceff)
+@Preview(showBackground = true, backgroundColor = 0xFFf4e1dd)
 @Composable
 fun InputTextPreview() {
     val text = remember { mutableStateOf<String>("ádasdasd") }
@@ -321,7 +338,6 @@ fun InputTextPreview() {
         }
     )
 }
-
 
 
 fun getDate(dateString: String): LocalDateTime? {
