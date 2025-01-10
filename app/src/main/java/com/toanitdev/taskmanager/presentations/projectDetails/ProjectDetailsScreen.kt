@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.twotone.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -70,7 +71,7 @@ fun ProjectDetailScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewMo
             Text(
                 "${projectState.value?.description}",
                 fontSize = 13.sp,
-                color = Color.Black.copy(alpha = 0.6f)
+                color = LocalContentColor.current.copy(alpha = 0.6f)
             )
 
             projectState.value?.let { project ->

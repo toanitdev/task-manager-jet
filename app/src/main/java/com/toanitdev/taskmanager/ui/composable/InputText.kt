@@ -38,7 +38,7 @@ fun InputText(
         Row(
             Modifier
                 .background(
-                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
                     shape = RoundedCornerShape(corner = CornerSize(12.dp))
                 )
                 .padding(16.dp)
@@ -48,7 +48,7 @@ fun InputText(
             BasicTextField(
                 value = value,
                 onValueChange = { onValueChange(it) },
-                textStyle = TextStyle(fontSize = 15.sp),
+                textStyle = TextStyle(fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface),
                 keyboardOptions = keyboardOptions ?: KeyboardOptions.Default,
                 modifier = Modifier.fillMaxWidth()
                 )

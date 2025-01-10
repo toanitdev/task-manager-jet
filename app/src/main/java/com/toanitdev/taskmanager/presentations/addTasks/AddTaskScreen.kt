@@ -20,6 +20,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -124,7 +125,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                         Modifier
                             .height(48.dp)
                             .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         if (priorityWheelState.currentIndex >= 0) {
                             Text(Task.Priority.entries[priorityWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
@@ -151,7 +152,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                         Modifier
                             .height(48.dp)
                             .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         if (statusWheelState.currentIndex >= 0) {
                             Text(Task.Status.entries[statusWheelState.currentIndex].label, modifier = Modifier.align(Alignment.Center))
@@ -179,7 +180,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                         Modifier
                             .height(48.dp)
                             .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         Text(startDate, modifier = Modifier.align(Alignment.Center))
 
@@ -206,7 +207,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                         Modifier
                             .height(48.dp)
                             .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         Text(endDate, modifier = Modifier.align(Alignment.Center))
 
@@ -247,7 +248,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
                         Modifier
                             .height(48.dp)
                             .fillMaxWidth()
-                            .background(Color.White, shape = RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHigh, shape = RoundedCornerShape(12.dp))
                     ) {
                         if (storyPointWheelState.currentIndex >= 0) {
                             Text("${storyPoint[storyPointWheelState.currentIndex]}", modifier = Modifier.align(Alignment.Center))

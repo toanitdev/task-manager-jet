@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.FloatingActionButtonDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.twotone.DateRange
@@ -32,6 +33,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,6 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -108,13 +111,23 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
     Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
 
         TopAppBar(
-            title = { Text("Your projects", fontSize = 26.sp, color = MaterialTheme.colorScheme.onPrimary) },
+            title = {
+                Text(
+                    "Your projects",
+                    fontSize = 26.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            },
             actions = {
 
                 IconButton(onClick = {
-                    openBottomSheet = !openBottomSheet
+
                 }) {
-                    Icon(imageVector = Icons.Filled.Add, "", tint = MaterialTheme.colorScheme.onPrimary)
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        "",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -122,7 +135,17 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
             )
         )
 
-    }, containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
+    }, containerColor = MaterialTheme.colorScheme.background,
+        floatingActionButton = {
+            FloatingActionButton(
+                shape = CircleShape,
+                onClick = { openBottomSheet = !openBottomSheet }) {
+                Icon(imageVector = Icons.Filled.Add, "",
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary)
+            }
+        }
+    ) { innerPadding ->
 
         Box(
             modifier = Modifier.padding(innerPadding)
@@ -223,7 +246,6 @@ fun AddProjectBottomSheet(
 }
 
 
-
 @Composable
 fun ProjectItemView(
     name: String,
@@ -242,8 +264,8 @@ fun ProjectItemView(
                 disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             modifier = Modifier.clickable {
-            onClicked()
-        }) {
+                onClicked()
+            }) {
 
             Column(
                 modifier = Modifier
@@ -300,7 +322,11 @@ fun ProjectItemView(
                     }
                     IconButton({}) {
 
-                        Icon(imageVector = Icons.TwoTone.MoreVert, "", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Icon(
+                            imageVector = Icons.TwoTone.MoreVert,
+                            "",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
 
                     }
                 }
