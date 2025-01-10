@@ -18,11 +18,16 @@ data class Task(
     var projectId: Int
 ) {
 
-    enum class Priority(val label: String, val level: Int, val color: Color) {
-        URGENT("Urgent", 1, color = Color(0xFFB71C1C)),
-        HIGH("High", 2, color = Color(0xFFFF6F00)),
-        NORMAL("Normal", 3, color = Color(0xFF01579B)),
-        LOW("Low", 4, color = Color(0xFF689F38))
+    enum class Priority(
+        val label: String,
+        val level: Int,
+        val contentColor: Color,
+        val containerColor: Color
+    ) {
+        URGENT("Urgent", 1,  Color(0xFFB71C1C),  Color(0xFFEF9A9A)),
+        HIGH("High", 2,  Color(0xFFFF6F00),  Color(0xFFFFAB91)),
+        NORMAL("Normal", 3,  Color(0xFF01579B),  Color(0xFF90CAF9)),
+        LOW("Low", 4,  Color(0xFF689F38), Color(0xFFA5D6A7))
     }
 
 

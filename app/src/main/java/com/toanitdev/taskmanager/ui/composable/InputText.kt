@@ -33,25 +33,34 @@ fun InputText(
 ) {
     Column {
 
-        Text(label, fontSize = 13.sp)
+        Text(label, style = MaterialTheme.typography.labelLarge)
         Spacer(Modifier.height(6.dp))
-        Row(
-            Modifier
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(corner = CornerSize(12.dp))
-                )
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            BasicTextField(
-                value = value,
-                onValueChange = { onValueChange(it) },
-                textStyle = TextStyle(fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface),
-                keyboardOptions = keyboardOptions ?: KeyboardOptions.Default,
-                modifier = Modifier.fillMaxWidth()
-                )
-        }
+
+        BasicTextField(
+            value = value,
+            onValueChange = { onValueChange(it) },
+            textStyle = TextStyle(
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            keyboardOptions = keyboardOptions ?: KeyboardOptions.Default,
+            modifier = Modifier.fillMaxWidth(),
+            decorationBox = { innerTextField ->
+                Row(
+                    Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surfaceContainerHigh,
+                            shape = RoundedCornerShape(corner = CornerSize(12.dp))
+                        )
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    innerTextField()
+                }
+
+            }
+        )
+
     }
 }

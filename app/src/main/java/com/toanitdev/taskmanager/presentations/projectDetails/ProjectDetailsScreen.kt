@@ -20,9 +20,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -41,6 +44,7 @@ import com.toanitdev.taskmanager.domain.entities.Task
 import com.toanitdev.taskmanager.presentations.AddTaskPage
 import com.toanitdev.taskmanager.presentations.LocalNavigation
 import com.toanitdev.taskmanager.presentations.project.ProjectViewmodel
+import com.toanitdev.taskmanager.ui.composable.VSpacer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -64,21 +68,24 @@ fun ProjectDetailScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewMo
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            Text("${projectState.value?.name}", fontSize = 21.sp)
+            Text("${projectState.value?.name}",
+                style = MaterialTheme.typography.headlineSmall)
+            VSpacer(8.dp)
             Text(
                 "${projectState.value?.description}",
-                fontSize = 13.sp,
+                style = MaterialTheme.typography.bodyMedium,
                 color = LocalContentColor.current.copy(alpha = 0.6f)
             )
-
+            VSpacer(12.dp)
             projectState.value?.let { project ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Tasks", fontSize = 18.sp)
+                    Text("Tasks",
+                        style = MaterialTheme.typography.headlineSmall)
                     Spacer(Modifier.weight(1f))
                     IconButton(onClick = {
                         navController.navigate(AddTaskPage(projectId = projectId))
                     }) {
-                        Icon(imageVector = Icons.Filled.Add, "")
+                        Icon(imageVector = Icons.Rounded.Add, "")
                     }
                 }
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -115,25 +122,27 @@ fun TaskItem(task: Task) {
                     .width(24.dp)
             ) {}
 
-            Text(task.name, Modifier.weight(1f))
+            Text(task.name, Modifier.weight(1f),
+                style = MaterialTheme.typography.titleMedium)
             VerticalDivider()
             Box(
                 Modifier
                     .width(70.dp)
                     .background(
-                        taskPriority.color.copy(alpha = 0.2f),
+                        taskPriority.containerColor,
                         shape = RoundedCornerShape(percent = 50)
                     )
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(taskPriority.label, color = taskPriority.color, fontSize = 13.sp)
+                Text(taskPriority.label, color = taskPriority.contentColor,
+                    style = MaterialTheme.typography.labelSmall)
             }
             VerticalDivider()
             IconButton({
 
             }, Modifier.size(24.dp)) {
-                Icon(imageVector = Icons.Filled.ArrowDropDown, "")
+                Icon(imageVector = Icons.Rounded.ArrowDropDown, "")
             }
         }
     }

@@ -8,16 +8,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.twotone.DateRange
 import androidx.compose.material.icons.twotone.MoreVert
 import androidx.compose.material3.Button
@@ -57,6 +63,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.toanitdev.taskmanager.domain.entities.Project
 import com.toanitdev.taskmanager.presentations.ProjectDetailsPage
 import com.toanitdev.taskmanager.ui.composable.InputText
+import com.toanitdev.taskmanager.ui.composable.VSpacer
 import com.toanitdev.taskmanager.ui.theme.Green
 import com.toanitdev.taskmanager.ui.theme.White
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +78,7 @@ import java.time.format.DateTimeFormatter
 fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (Any) -> Unit) {
 
     var openBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val skipPartiallyExpanded by rememberSaveable { mutableStateOf(false) }
+    val skipPartiallyExpanded by rememberSaveable { mutableStateOf(true) }
     val bottomSheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
     var list = remember { mutableStateListOf<Project>() }
@@ -91,8 +98,8 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
             title = {
                 Text(
                     "Your projects",
-                    fontSize = 26.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.headlineMedium
                 )
             },
             actions = {
@@ -117,7 +124,7 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
             FloatingActionButton(
                 shape = CircleShape,
                 onClick = { openBottomSheet = !openBottomSheet }) {
-                Icon(imageVector = Icons.Filled.Add, "",
+                Icon(imageVector = Icons.Rounded.Add, "",
                     modifier = Modifier.size(40.dp),
                     tint = MaterialTheme.colorScheme.onPrimary)
             }
@@ -175,11 +182,16 @@ fun AddProjectBottomSheet(
     onAdd: (Project) -> Unit,
     sheetState: SheetState
 ) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+    ModalBottomSheet(
+        modifier = Modifier
+            .imePadding(),
+        onDismissRequest = onDismissRequest, sheetState = sheetState) {
         var name by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row {
@@ -195,14 +207,16 @@ fun AddProjectBottomSheet(
             }
             Row {
                 InputText(
-                    Modifier.padding(16.dp), "Project description",
+                    Modifier
+                        .padding(16.dp), "Project description",
                     value = description,
                     onValueChange = {
                         description = it
                     }
                 )
             }
-            Button(onClick = {
+            VSpacer()
+            Button(modifier = Modifier.fillMaxWidth(), onClick = {
                 onAdd(
                     Project(
                         name = name, description = description,
@@ -215,10 +229,12 @@ fun AddProjectBottomSheet(
                     )
                 )
             }) {
-                Text("Add")
+                Text(
+                    "Add",
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
         }
-
     }
 }
 
@@ -263,7 +279,7 @@ fun ProjectItemView(
                         Text(
                             name.first().uppercase(),
                             color = White,
-                            fontWeight = FontWeight.Bold
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                     Column(
@@ -271,10 +287,9 @@ fun ProjectItemView(
                     ) {
                         Text(
                             name,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleLarge
                         )
 
                         getDate(dateTime)?.let {
@@ -291,7 +306,7 @@ fun ProjectItemView(
                                 )
                                 Text(
                                     it.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                                    fontSize = 15.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     color = LocalContentColor.current.copy(alpha = 0.7f),
                                 )
                             }
@@ -311,7 +326,7 @@ fun ProjectItemView(
                 HorizontalDivider()
                 Text(
                     description,
-                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = LocalContentColor.current.copy(alpha = 0.7f),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
