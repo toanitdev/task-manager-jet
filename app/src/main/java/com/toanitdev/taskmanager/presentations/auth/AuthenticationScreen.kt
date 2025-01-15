@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,13 +39,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.toanitdev.taskmanager.ui.composable.InputText
 import com.toanitdev.taskmanager.ui.composable.VSpacer
 import com.toanitdev.taskmanager.ui.theme.TaskManagerTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
-fun AuthenticationScreen() {
+fun AuthenticationScreen(viewModel: AuthViewModel = hiltViewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -60,6 +65,7 @@ fun AuthenticationScreen() {
             view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
         }
     }
+
 
     Scaffold(
         contentWindowInsets = if (isKeyboardVisible) WindowInsets.statusBars else ScaffoldDefaults.contentWindowInsets
@@ -139,7 +145,9 @@ fun AuthenticationScreen() {
                         }
 
                         TextButton(onClick = {
-
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.signIn(username,password)
+                            }
                         }) {
                             Text(
                                 "Sign In".uppercase(),

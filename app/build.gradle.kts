@@ -25,11 +25,20 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "BASE_URL","\"http://10.0.2.2:9004\"")
+        }
+
+        debug {
+            isMinifyEnabled = false
+            isDebuggable = true
+            buildConfigField("String", "BASE_URL","\"http://10.0.2.2:9004\"")
         }
     }
     compileOptions {
@@ -41,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 //    room {
 //        schemaDirectory("$projectDir/schemas")
@@ -68,6 +78,13 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.23.1")
     implementation("com.github.zj565061763:compose-wheel-picker:1.0.0-rc02")
     implementation("androidx.compose.material3:material3:1.2.0")
+
+    // retrofit
+    implementation(libs.retrofit)
+
+    implementation(libs.converter.gson)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

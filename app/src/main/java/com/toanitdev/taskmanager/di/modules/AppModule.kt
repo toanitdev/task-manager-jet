@@ -6,7 +6,9 @@ import com.toanitdev.taskmanager.data.datasources.local.room.RoomDataSource
 import com.toanitdev.taskmanager.data.datasources.local.room.TodoDatabase
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSource
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSourceImpl
+import com.toanitdev.taskmanager.data.repositories.AuthRepositoryImpl
 import com.toanitdev.taskmanager.data.repositories.ProjectRepositoryImpl
+import com.toanitdev.taskmanager.domain.repositories.AuthRepository
 import com.toanitdev.taskmanager.domain.repositories.ProjectRepository
 import dagger.Binds
 import dagger.Module
@@ -31,6 +33,10 @@ abstract class RepositoriesModule {
     @Binds
     @Singleton
     abstract fun bindProjectRepository(repositoryImpl: ProjectRepositoryImpl) : ProjectRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(repositoryImpl: AuthRepositoryImpl) : AuthRepository
 }
 
 
