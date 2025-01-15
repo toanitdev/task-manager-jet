@@ -1,7 +1,9 @@
 package com.toanitdev.taskmanager.presentations
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +13,7 @@ import androidx.navigation.toRoute
 import com.toanitdev.taskmanager.core.serializableType
 import com.toanitdev.taskmanager.domain.entities.Project
 import com.toanitdev.taskmanager.presentations.addTasks.AddTaskScreen
+import com.toanitdev.taskmanager.presentations.auth.AuthenticationScreen
 import com.toanitdev.taskmanager.presentations.project.ProjectScreen
 import com.toanitdev.taskmanager.presentations.projectDetails.ProjectDetailScreen
 import kotlinx.serialization.Serializable
@@ -26,8 +29,14 @@ fun RootNavigation() {
     CompositionLocalProvider(
         LocalNavigation provides navController
     ) {
+
+
+
         NavHost(navController = navController,
-            startDestination = ProjectPage) {
+            startDestination = AuthenticationPage) {
+            composable<AuthenticationPage> {
+                AuthenticationScreen()
+            }
             composable<ProjectPage> {
                 ProjectScreen() { page ->
                     navController.navigate(page)
@@ -60,6 +69,9 @@ fun RootNavigation() {
 
 @Serializable
 object ProjectPage
+
+@Serializable
+object AuthenticationPage
 
 @Serializable
 data class ProjectDetailsPage(val project: Project)

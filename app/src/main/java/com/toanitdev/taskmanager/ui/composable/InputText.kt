@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -29,6 +31,7 @@ fun InputText(
     label: String,
     value: String,
     keyboardOptions: KeyboardOptions? = KeyboardOptions.Default,
+    visualTransformation: VisualTransformation? = VisualTransformation.None,
     onValueChange: (String) -> Unit,
 ) {
     Column {
@@ -43,6 +46,7 @@ fun InputText(
                 fontSize = 15.sp,
                 color = MaterialTheme.colorScheme.onSurface
             ),
+            visualTransformation = visualTransformation?: VisualTransformation.None,
             keyboardOptions = keyboardOptions ?: KeyboardOptions.Default,
             modifier = Modifier.fillMaxWidth(),
             decorationBox = { innerTextField ->
