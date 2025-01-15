@@ -67,7 +67,7 @@ fun AuthenticationScreen() {
         Box(
             Modifier
                 .padding(innerPadding)
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 24.dp)
                 .imePadding()
                 .fillMaxSize(), contentAlignment = Alignment.Center
         ) {
