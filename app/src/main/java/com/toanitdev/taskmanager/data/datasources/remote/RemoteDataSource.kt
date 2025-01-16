@@ -9,5 +9,5 @@ import retrofit2.Call
 
 interface RemoteDataSource {
 
-    fun login(request: LoginRequest) : Call<BaseResponse<LoginResponse>>
+    suspend fun login(request: LoginRequest) : BaseResponse<LoginResponse>
 }

@@ -2,15 +2,12 @@ package com.toanitdev.taskmanager.presentations.auth
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.toanitdev.taskmanager.data.datasources.remote.retrofit.models.response.BaseResponse
-import com.toanitdev.taskmanager.data.datasources.remote.retrofit.models.response.LoginResponse
-import com.toanitdev.taskmanager.domain.interactors.GetAllProjects
+import androidx.lifecycle.viewModelScope
+import com.toanitdev.taskmanager.data.datasources.remote.middleware.ApiResult
+import com.toanitdev.taskmanager.data.datasources.remote.middleware.CallFailure
 import com.toanitdev.taskmanager.domain.interactors.SignInByAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -21,17 +18,35 @@ class AuthViewModel @Inject constructor(
 
 
     fun signIn(username: String, password: String) {
-        signInByAccount.execute(SignInByAccount.Param(username, password))
-            .enqueue(object : Callback<BaseResponse<LoginResponse>> {
-                override fun onResponse(p0: Call<BaseResponse<LoginResponse>>, p1: Response<BaseResponse<LoginResponse>>) {
-                    Log.d("ToanDev", "SS::1:httpCode: ${p1.code()} token: ${p1.body()?.data?.access_token}")
+
+        viewModelScope.launch {
+
+            signInByAccount.execute(SignInByAccount.Param(username, password)).collect { result ->
+                when(result) {
+                    is ApiResult.Success -> {
+
+                        Log.d("ToanDev", "SS::1:username: ${result.data.username} token: ${result.data.accessToken}")
+                    }
+
+                    is ApiResult.Failure -> {
+                        when(val failure = result.failure) {
+                            is CallFailure.HttpFailure -> {
+
+                                Log.d("ToanDev", "FF::1:message: ${failure.message} code: ${failure.code}")
+                            }
+                            is CallFailure.IOFailure -> {
+
+                                Log.d("ToanDev", "FF::2:message:  ${failure.message}")
+                            }
+                            is CallFailure.UnknownFailure -> {
+
+                                Log.d("ToanDev", "FF::3:message:  ${failure.message}")
+                            }
+                        }
+                    }
                 }
+            }
+        }
 
-                override fun onFailure(p0: Call<BaseResponse<LoginResponse>>, p1: Throwable) {
-                    Log.d("ToanDev", "F::2:${p1.message}")
-                }
-
-
-            })
     }
 }
