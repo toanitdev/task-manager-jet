@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.Add
@@ -68,8 +69,21 @@ fun ProjectDetailScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewMo
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            Text("${projectState.value?.name}",
-                style = MaterialTheme.typography.headlineSmall)
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                        "",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                Text("${projectState.value?.name}",
+                    style = MaterialTheme.typography.headlineSmall)
+            }
             VSpacer(8.dp)
             Text(
                 "${projectState.value?.description}",

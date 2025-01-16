@@ -27,12 +27,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -65,6 +68,7 @@ import com.sd.lib.compose.wheel_picker.FVerticalWheelPicker
 import com.sd.lib.compose.wheel_picker.rememberFWheelPickerState
 import com.toanitdev.taskmanager.core.helper.getCurrentDateTimeString
 import com.toanitdev.taskmanager.domain.entities.Task
+import com.toanitdev.taskmanager.presentations.LocalNavigation
 import com.toanitdev.taskmanager.presentations.project.ProjectViewmodel
 import com.toanitdev.taskmanager.ui.composable.InputText
 import kotlinx.coroutines.CoroutineScope
@@ -109,6 +113,7 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val scrollState = rememberScrollState()
     val view = LocalView.current
+    val navController = LocalNavigation.current
     var isKeyboardVisible by remember { mutableStateOf(false) }
 
     DisposableEffect(view) {
@@ -127,7 +132,10 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
     ) { innerPadding ->
         val i = innerPadding
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(vertical = 16.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -138,7 +146,18 @@ fun AddTaskScreen(projectId: Int, viewmodel: ProjectViewmodel = hiltViewModel())
             ) {
 
 
-                Text("Project: $projectId ", style = MaterialTheme.typography.headlineSmall)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                            "",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Text("Project: $projectId ", style = MaterialTheme.typography.headlineSmall)
+                }
                 InputText(
                     label = "Title", value = name,
                     modifier = Modifier.height(48.dp)

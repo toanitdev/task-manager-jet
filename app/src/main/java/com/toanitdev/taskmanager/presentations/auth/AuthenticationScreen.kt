@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
@@ -25,6 +27,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +43,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.toanitdev.taskmanager.domain.entities.Project
+import com.toanitdev.taskmanager.presentations.LocalNavigation
+import com.toanitdev.taskmanager.presentations.ProjectPage
 import com.toanitdev.taskmanager.ui.composable.InputText
 import com.toanitdev.taskmanager.ui.composable.VSpacer
 import com.toanitdev.taskmanager.ui.theme.TaskManagerTheme
@@ -50,11 +56,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AuthenticationScreen(viewModel: AuthViewModel = hiltViewModel()) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("toantran") }
+    var password by remember { mutableStateOf("123456") }
 
     val view = LocalView.current
     var isKeyboardVisible by remember { mutableStateOf(false) }
+
+    val loginState by viewModel.loginState.collectAsState()
+
+    val navController = LocalNavigation.current
     DisposableEffect(view) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             isKeyboardVisible = ViewCompat.getRootWindowInsets(view)?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
@@ -144,18 +154,31 @@ fun AuthenticationScreen(viewModel: AuthViewModel = hiltViewModel()) {
                             }
                         }
 
-                        TextButton(onClick = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                viewModel.signIn(username,password)
+                        SignInButton {
+                            viewModel.signIn(username,password)
+                        }
+                        when(loginState) {
+                            is AuthViewModel.LoginState.Error -> {
+
                             }
-                        }) {
-                            Text(
-                                "Sign In".uppercase(),
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.labelMedium
-                            )
+                            AuthViewModel.LoginState.Idle -> {
+
+                            }
+                            AuthViewModel.LoginState.Loading -> {
+
+                            }
+                            AuthViewModel.LoginState.Success -> {
+                                LaunchedEffect(Unit) {
+                                    navController.navigate(ProjectPage) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            inclusive = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+
+                                    viewModel.resetLoginState()
+                                }
+                            }
                         }
                     }
                 }
@@ -163,6 +186,21 @@ fun AuthenticationScreen(viewModel: AuthViewModel = hiltViewModel()) {
                 VSpacer(64.dp)
             }
         }
+    }
+}
+
+@Composable
+fun SignInButton(onClick:() -> Unit) {
+    TextButton(onClick = {
+        onClick()
+    }) {
+        Text(
+            "Sign In".uppercase(),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+            color = MaterialTheme.colorScheme.onPrimary,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 
