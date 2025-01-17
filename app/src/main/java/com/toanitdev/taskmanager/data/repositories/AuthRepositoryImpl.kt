@@ -5,6 +5,7 @@ import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSource
 import com.toanitdev.taskmanager.data.datasources.remote.middleware.ApiResult
 import com.toanitdev.taskmanager.data.datasources.remote.middleware.handleApiCall
 import com.toanitdev.taskmanager.data.datasources.remote.retrofit.models.request.LoginRequest
+import com.toanitdev.taskmanager.data.datasources.shared.SharedDataSource
 import com.toanitdev.taskmanager.domain.entities.LoginToken
 import com.toanitdev.taskmanager.domain.repositories.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,11 +14,12 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val roomDataSource: RoomDataSource,
-    private val remoteDatasource: RemoteDataSource,
+    private val remoteDataSource: RemoteDataSource,
+    private val sharedDataSource: SharedDataSource,
 ) : AuthRepository {
     override fun login(request: LoginRequest): Flow<ApiResult<LoginToken>> {
         return flow {
-            val result = handleApiCall(call = { remoteDatasource.login(request) })
+            val result = handleApiCall(call = { remoteDataSource.login(request) })
             when (result) {
                 is ApiResult.Failure -> emit(result)
                 is ApiResult.Success -> {
@@ -35,7 +37,13 @@ class AuthRepositoryImpl @Inject constructor(
                                 )
                             )
                         )
+
+                        sharedDataSource.saveAccessToken(it.accessToken)
+                        sharedDataSource.saveFreshToken(it.refreshToken)
                     }
+
+
+
                 }
             }
         }

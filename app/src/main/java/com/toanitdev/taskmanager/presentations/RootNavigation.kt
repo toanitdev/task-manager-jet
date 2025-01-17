@@ -1,9 +1,7 @@
 package com.toanitdev.taskmanager.presentations
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,8 +12,10 @@ import com.toanitdev.taskmanager.core.serializableType
 import com.toanitdev.taskmanager.domain.entities.Project
 import com.toanitdev.taskmanager.presentations.addTasks.AddTaskScreen
 import com.toanitdev.taskmanager.presentations.auth.AuthenticationScreen
+import com.toanitdev.taskmanager.presentations.profile.ProfileScreen
 import com.toanitdev.taskmanager.presentations.project.ProjectScreen
 import com.toanitdev.taskmanager.presentations.projectDetails.ProjectDetailScreen
+import com.toanitdev.taskmanager.presentations.splashScreen.SplashScreen
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 
@@ -33,9 +33,15 @@ fun RootNavigation() {
 
 
         NavHost(navController = navController,
-            startDestination = AuthenticationPage) {
+            startDestination = SplashPage) {
+            composable<SplashPage> {
+                SplashScreen()
+            }
             composable<AuthenticationPage> {
                 AuthenticationScreen()
+            }
+            composable<ProfilePage> {
+                ProfileScreen()
             }
             composable<ProjectPage> {
                 ProjectScreen() { page ->
@@ -57,7 +63,7 @@ fun RootNavigation() {
                 project.projectId?.let { ProjectDetailScreen(it) }
             }
 
-            composable<AddTaskPage>{  backStackEntry ->
+                composable<AddTaskPage>{  backStackEntry ->
                 val projectId = backStackEntry.toRoute<AddTaskPage>().projectId
                 AddTaskScreen(projectId)
             }
@@ -68,7 +74,13 @@ fun RootNavigation() {
 }
 
 @Serializable
+object SplashPage
+
+@Serializable
 object ProjectPage
+
+@Serializable
+object ProfilePage
 
 @Serializable
 object AuthenticationPage

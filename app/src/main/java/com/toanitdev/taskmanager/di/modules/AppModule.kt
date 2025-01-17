@@ -6,10 +6,13 @@ import com.toanitdev.taskmanager.data.datasources.local.room.RoomDataSource
 import com.toanitdev.taskmanager.data.datasources.local.room.TodoDatabase
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSource
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSourceImpl
+import com.toanitdev.taskmanager.data.datasources.shared.SharedDataSource
 import com.toanitdev.taskmanager.data.repositories.AuthRepositoryImpl
 import com.toanitdev.taskmanager.data.repositories.ProjectRepositoryImpl
+import com.toanitdev.taskmanager.data.repositories.UserRepositoryImpl
 import com.toanitdev.taskmanager.domain.repositories.AuthRepository
 import com.toanitdev.taskmanager.domain.repositories.ProjectRepository
+import com.toanitdev.taskmanager.domain.repositories.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -37,6 +40,10 @@ abstract class RepositoriesModule {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(repositoryImpl: AuthRepositoryImpl) : AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(repositoryImpl: UserRepositoryImpl) : UserRepository
 }
 
 
@@ -59,6 +66,12 @@ object AppModule {
     @Singleton
     fun provideRoomDataSource(todoDatabase: TodoDatabase) : RoomDataSource {
         return RoomDataSource(todoDatabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedDataSource(@ApplicationContext context: Context) : SharedDataSource {
+        return SharedDataSource(context)
     }
 
 }

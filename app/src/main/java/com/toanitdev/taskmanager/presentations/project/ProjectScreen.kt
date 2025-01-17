@@ -29,6 +29,7 @@ import androidx.compose.material.icons.twotone.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -45,6 +46,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.toanitdev.taskmanager.domain.entities.Project
+import com.toanitdev.taskmanager.presentations.LocalNavigation
+import com.toanitdev.taskmanager.presentations.ProfilePage
 import com.toanitdev.taskmanager.presentations.ProjectDetailsPage
 import com.toanitdev.taskmanager.ui.composable.InputText
 import com.toanitdev.taskmanager.ui.composable.VSpacer
@@ -82,13 +86,16 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
     val bottomSheetState =
         rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
     var list = remember { mutableStateListOf<Project>() }
-
+    val navController = LocalNavigation.current
+    val userState by viewmodel.userState.collectAsState()
     LaunchedEffect("") {
 
         CoroutineScope(Dispatchers.IO).launch {
             list.clear()
             list.addAll(viewmodel.getAllProject().toMutableStateList())
         }
+
+        viewmodel.getProfile()
     }
 
 
@@ -96,16 +103,35 @@ fun ProjectScreen(viewmodel: ProjectViewmodel = hiltViewModel(), onNavigate: (An
 
         TopAppBar(
             title = {
-                Text(
-                    "Your projects",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.headlineMedium
-                )
+                Column {
+
+                    when(userState) {
+                        ProjectViewmodel.UserState.Error -> {}
+                        ProjectViewmodel.UserState.Idle -> {}
+                        ProjectViewmodel.UserState.Loading -> {
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+                        }
+                        is ProjectViewmodel.UserState.Success -> {
+                            val nickName = (userState as ProjectViewmodel.UserState.Success).data.nickName
+                            Text(
+                                "Hi, ${nickName}",
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                        }
+                    }
+
+                    Text(
+                        "Your projects",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
             },
             actions = {
 
                 IconButton(onClick = {
-
+                    navController.navigate(ProfilePage)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,

@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.material)
     ksp(libs.androidx.room.compiler)
+    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
 
 
     implementation (libs.hilt.android)
@@ -73,6 +74,7 @@ dependencies {
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     implementation("com.google.accompanist:accompanist-pager:0.23.1")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.23.1")
