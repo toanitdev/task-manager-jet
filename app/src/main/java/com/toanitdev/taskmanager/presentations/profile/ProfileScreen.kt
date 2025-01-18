@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.toanitdev.taskmanager.presentations.AuthStateController
 import com.toanitdev.taskmanager.presentations.AuthenticationPage
 import com.toanitdev.taskmanager.presentations.LocalNavigation
 import com.toanitdev.taskmanager.presentations.SharedViewModel
@@ -21,13 +22,7 @@ fun ProfileScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
         Column(Modifier.padding(innerPadding)) {
             TextButton({
                 sharedViewModel.logOut {
-                    navController.navigate(AuthenticationPage) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
-
+                    AuthStateController.authStateListener?.onLogout()
                 }
             }) {
                 Text("Log out")

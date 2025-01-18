@@ -43,8 +43,12 @@ fun RootNavigation() {
             AuthStateController.authStateListener = object :AuthStateListener {
                 override fun onLogout() {
                     CoroutineScope(Dispatchers.Main).launch {
-
-                        navController.navigate(AuthenticationPage)
+                        navController.navigate(AuthenticationPage) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
