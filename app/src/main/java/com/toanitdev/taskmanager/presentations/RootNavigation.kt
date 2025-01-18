@@ -2,6 +2,7 @@ package com.toanitdev.taskmanager.presentations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,11 +17,19 @@ import com.toanitdev.taskmanager.presentations.profile.ProfileScreen
 import com.toanitdev.taskmanager.presentations.project.ProjectScreen
 import com.toanitdev.taskmanager.presentations.projectDetails.ProjectDetailScreen
 import com.toanitdev.taskmanager.presentations.splashScreen.SplashScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
 
 
 val LocalNavigation = staticCompositionLocalOf<NavHostController> { error("Not provided") }
+
+object AuthStateController {
+    var authStateListener: AuthStateListener? = null
+}
 
 @Composable
 fun RootNavigation() {
@@ -30,6 +39,16 @@ fun RootNavigation() {
         LocalNavigation provides navController
     ) {
 
+        LaunchedEffect(navController) {
+            AuthStateController.authStateListener = object :AuthStateListener {
+                override fun onLogout() {
+                    CoroutineScope(Dispatchers.Main).launch {
+
+                        navController.navigate(AuthenticationPage)
+                    }
+                }
+            }
+        }
 
 
         NavHost(navController = navController,

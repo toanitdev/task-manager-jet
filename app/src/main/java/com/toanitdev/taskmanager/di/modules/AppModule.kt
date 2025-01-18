@@ -6,6 +6,7 @@ import com.toanitdev.taskmanager.data.datasources.local.room.RoomDataSource
 import com.toanitdev.taskmanager.data.datasources.local.room.TodoDatabase
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSource
 import com.toanitdev.taskmanager.data.datasources.remote.RemoteDataSourceImpl
+import com.toanitdev.taskmanager.data.datasources.remote.retrofit.RetrofitInstance
 import com.toanitdev.taskmanager.data.datasources.shared.SharedDataSource
 import com.toanitdev.taskmanager.data.repositories.AuthRepositoryImpl
 import com.toanitdev.taskmanager.data.repositories.ProjectRepositoryImpl
@@ -72,6 +73,11 @@ object AppModule {
     @Singleton
     fun provideSharedDataSource(@ApplicationContext context: Context) : SharedDataSource {
         return SharedDataSource(context)
+    }
+    @Provides
+    @Singleton
+    fun provideRetrofitInstance(@ApplicationContext context: Context) : RetrofitInstance {
+        return RetrofitInstance(context)
     }
 
 }
