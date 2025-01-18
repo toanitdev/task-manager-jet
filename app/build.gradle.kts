@@ -5,8 +5,9 @@ plugins {
 
     alias(libs.plugins.jetbrains.kotlin.serialization)
     id("com.google.devtools.ksp")
-    id ("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -36,6 +37,8 @@ android {
         }
 
         debug {
+
+            applicationIdSuffix = (".dev")
             isMinifyEnabled = false
             isDebuggable = true
             buildConfigField("String", "BASE_URL","\"http://10.0.2.2:9004\"")
@@ -81,12 +84,20 @@ dependencies {
     implementation("com.github.zj565061763:compose-wheel-picker:1.0.0-rc02")
     implementation("androidx.compose.material3:material3:1.2.0")
 
+
     // retrofit
     implementation(libs.retrofit)
-
+    //Gson
     implementation(libs.converter.gson)
+    //Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    // Google Sign-In
+    implementation ("com.google.android.gms:play-services-auth:21.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

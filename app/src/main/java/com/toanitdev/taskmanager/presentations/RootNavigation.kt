@@ -30,6 +30,10 @@ val LocalNavigation = staticCompositionLocalOf<NavHostController> { error("Not p
 object AuthStateController {
     var authStateListener: AuthStateListener? = null
 }
+interface AuthStateListener {
+    fun onLogout()
+}
+
 
 @Composable
 fun RootNavigation() {

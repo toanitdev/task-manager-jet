@@ -10,11 +10,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val sharedDataSource: SharedDataSource) : ViewModel() {
 
-    var mainNavController: NavController? = null
-
-    fun initMainNavController(navController: NavController) {
-        mainNavController = navController
-    }
 
     fun isLogin() : Boolean {
         return sharedDataSource.loadAccessToken().isNotEmpty()
@@ -30,7 +25,3 @@ class SharedViewModel @Inject constructor(private val sharedDataSource: SharedDa
 
 }
 
-
-interface AuthStateListener {
-    fun onLogout()
-}
