@@ -5,11 +5,9 @@ import com.toanitdev.taskmanager.BuildConfig.BASE_URL
 import com.toanitdev.taskmanager.data.datasources.remote.retrofit.models.request.RefreshTokenRequest
 import com.toanitdev.taskmanager.data.datasources.shared.SharedDataSource
 import com.toanitdev.taskmanager.presentations.AuthStateController
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -68,50 +66,34 @@ class AuthInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
         return runBlocking {
-
             if (response.code == 401) {
                 synchronized(this) {
                     return@runBlocking runBlocking {
-                        println("ToanAuth:: FF Token InValid")
                         val deferred = CoroutineScope(Dispatchers.IO).async() {
                             try {
                                 val result =
                                     authService.refreshToken(RefreshTokenRequest(sharedDataSource.loadFreshToken()))
                                 result.data?.accessToken?.let {
                                     sharedDataSource.saveAccessToken(it)
-
-                                    println("ToanAuth:: REFRESH Success")
                                     return@async it
                                 }
-
                             } catch (ex: Exception) {
-
-                                println("ToanAuth:: REFRESH ERROR")
                                 sharedDataSource.removeAccessToken()
                                 sharedDataSource.removeRefreshToken()
                                 return@async ""
                             }
-
-                            println("ToanAuth:: REFRESH ERROR")
                             return@async ""
                         }
-
                         val result = deferred.await()
                         if(result.isNotEmpty()) {
-
-                            println("ToanAuth:: Try request again")
                             response.close()
                             return@runBlocking chain.proceed(chain.request().newBuilder().header("Authorization", "Bearer $result").build())
                         }
-
-                        println("ToanAuth:: REFRESH ERROR :: Return Error 1st request")
                         AuthStateController.authStateListener?.onLogout()
                         return@runBlocking response
                     }
                 }
-
             }
-            println("ToanAuth:: SS Token Valid")
             return@runBlocking response
         }
 
